@@ -20,6 +20,7 @@ void tambah_data(){
         return;
     }
 
+    system("cls");
     Mahasiswa mhs;
     printf("NRP                 : "); scanf(" %[^\n]", mhs.nrp);
     printf("Nama                : "); scanf(" %[^\n]", mhs.nama);
@@ -40,6 +41,8 @@ void ubah_data() {
         printf("Gagal membuka file.\n");
         return;
     }
+
+    system("cls");
     char target[11];
     printf("Masukkan NRP yang ingin diubah: ");
     scanf(" %[^\n]", target);
@@ -88,21 +91,46 @@ void tampil_data(bool idx_flag) {
     fclose(f);
 
     float total_ipk = 0;
-    printf("%-4s %-11s %-26s %-8s %-5s\n", "No", "NRP", "Nama", "Gender", "IPK");
-    for (int i = 0; i < count; i++) {
-        printf("%-4d %-11s %-26s %-8s %-5.2f\n", 
-            idx_flag ? i+1 : 0, 
-            list[i].nrp, 
-            list[i].nama, 
-            list[i].gender == 0 ? "Pria" : "Wanita", 
-            list[i].ipk);
+    system("cls");
 
-        total_ipk += list[i].ipk;
+    // yang ini pake index
+    if (idx_flag){
+        printf("%-4s %-11s %-26s %-8s %-5s\n", "No", "NRP", "Nama", "Gender", "IPK");
+        
+        for (int i = 0; i < count; i++) {
+            printf("%-4d %-11s %-26s %-8s %-5.2f\n", 
+                idx_flag ? i+1 : 0, 
+                list[i].nrp, 
+                list[i].nama, 
+                list[i].gender == 0 ? "Pria" : "Wanita", 
+                list[i].ipk);
 
-        if ((i + 1) % 10 == 0) {
-            printf("Tekan tombol apapun untuk melanjutkan...\n");
-            getch();
+            total_ipk += list[i].ipk;
+
+            if ((i + 1) % 10 == 0) {
+                printf("Tekan tombol apapun untuk melanjutkan...\n");
+                getch();
+            }
         }
+    } 
+    // yang ini tanpa index
+    else {
+        printf("%-11s %-26s %-8s %-5s\n", "NRP", "Nama", "Gender", "IPK");
+        for (int i = 0; i < count; i++) {
+            printf("%-11s %-26s %-8s %-5.2f\n", 
+                list[i].nrp, 
+                list[i].nama, 
+                list[i].gender == 0 ? "Pria" : "Wanita", 
+                list[i].ipk);
+    
+            total_ipk += list[i].ipk;
+    
+            if ((i + 1) % 10 == 0) {
+                printf("Tekan tombol apapun untuk melanjutkan...\n");
+                getch();
+            }
+        }
+
     }
 
     printf("\nRata-rata IPK: %.2f\n", total_ipk/count);
@@ -127,6 +155,7 @@ void hapus_data() {
     }
     fclose(f);
 
+    system("cls");
     char nrp[11];
     printf("Masukkan NRP yang ingin dihapus: ");
     scanf(" %[^\n]", nrp);
@@ -134,11 +163,12 @@ void hapus_data() {
     int found = 0;
     for (int i = 0; i < count; i++) {
         if (strcmp(list[i].nrp, nrp) == 0) {
-            for (int j = i; j < count; j++) {
+            for (int j = i; j < count - 1; j++) {
                 list[j] = list[j+1];        // shifting
             }
             count--;
-            found = 1;            
+            found = 1;  
+            break;          
         }
     }
 
@@ -157,6 +187,7 @@ void hapus_data() {
     }
 
     fwrite(list, sizeof(Mahasiswa), count, f);
+    fclose(f);
 
     printf("Data Berhasil dihapus.\n");
     printf("Tekan tombol apapun untuk melanjutkan...\n");
@@ -207,7 +238,10 @@ int main() {
                 case 2: tampil_data(1); break;  // dengan index
                 case 3: tampil_data(0); break;  // tanpa index
                 case 4: hapus_data(); break;
-                case 5: return 0;
+                case 5: 
+                    system("cls");
+                    printf("Terima kasih karena sudah menggunakan layanan kami..\n\n");
+                    return 0;
             }
         }
     }
