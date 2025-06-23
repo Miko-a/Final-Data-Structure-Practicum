@@ -30,7 +30,38 @@ void tambah_data(){
 }
 
 void ubah_data() {
+ FILE *f = fopen("data.bin", "rb+");
+    if (!f) {
+        printf("Gagal membuka file.\n");
+        return;
+    }
+    char target[11];
+    printf("Masukkan NRP yang ingin diubah: ");
+    scanf(" %[^\n]", target);
+    Mahasiswa mhs;
+    int found = 0;
 
+    while (fread(&mhs, sizeof(Mahasiswa), 1, f)) {
+        if (strcmp(mhs.nrp, target) == 0) {
+            printf("Data ditemukan. Masukkan data baru:\n");
+            printf("Nama                : "); scanf(" %[^\n]", mhs.nama);
+            printf("Gender (0=L/1=P)    : "); scanf("%d", &mhs.gender);
+            printf("IPK                 : "); scanf("%f", &mhs.ipk);
+
+        fseek(f, -(long)sizeof(Mahasiswa), SEEK_CUR);
+        fwrite(&mhs, sizeof(Mahasiswa), 1, f);
+        printf("Data Berhasil Diubah\n");
+        getch();
+        found = 1;
+        break;
+    }
+}
+    if (!found) {
+    printf("NRP tidak ditemukan.\n");
+    getch();
+    }
+    fclose(f);
+}
 }
 
 void tampil_data(int idx) {
