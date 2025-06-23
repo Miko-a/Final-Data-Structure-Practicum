@@ -56,6 +56,8 @@ void ubah_data() {
             fseek(f, -(long)sizeof(Mahasiswa), SEEK_CUR);
             fwrite(&mhs, sizeof(Mahasiswa), 1, f);
             printf("Data Berhasil Diubah\n");
+
+            printf("Tekan tombol apapun untuk melanjutkan..\n");
             getch();
             found = 1;
             break;
@@ -71,6 +73,42 @@ void ubah_data() {
 
 
 void tampil_data(bool idx_flag) {
+    FILE *f = fopen("data.bin", "rb");
+    if (!f) {
+        printf("Gagal membuka file..\n");
+        return;
+    }
+
+    // hitung jumlah data
+    int count = 0;
+    Mahasiswa list[100];
+    while(count < 100 && fread(&list[count], sizeof(Mahasiswa), 1, f )) {
+        count++;
+    }
+    fclose(f);
+
+    float total_ipk = 0;
+    printf("%-4s %-11s %-26s %-8s %-5s\n", "No", "NRP", "Nama", "Gender", "IPK");
+    for (int i = 0; i < count; i++) {
+        printf("%-4d %-11s %-26s %-8s %-5.2f\n", 
+            idx_flag ? i+1 : 0, 
+            list[i].nrp, 
+            list[i].nama, 
+            list[i].gender == 0 ? "Pria" : "Wanita", 
+            list[i].ipk);
+
+        total_ipk += list[i].ipk;
+
+        if ((i + 1) % 10 == 0) {
+            printf("Tekan tombol apapun untuk melanjutkan...\n");
+            getch();
+        }
+    }
+
+    printf("\nRata-rata IPK: %.2f\n", total_ipk/count);
+
+    printf("Tekan tombol apapun untuk melanjutkan..\n");
+    getch();
 
 }
 
@@ -126,8 +164,6 @@ void hapus_data() {
 }
 
 int main() {
-    load();
-
     int pilihan = 0;
     char key;
 
@@ -171,7 +207,7 @@ int main() {
                 case 2: tampil_data(1); break;  // dengan index
                 case 3: tampil_data(0); break;  // tanpa index
                 case 4: hapus_data(); break;
-                case 5: break;
+                case 5: return 0;
             }
         }
     }
