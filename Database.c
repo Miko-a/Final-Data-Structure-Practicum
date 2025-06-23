@@ -27,6 +27,7 @@ void tambah_data(){
     fwrite(&mhs, sizeof(Mahasiswa),1,f);
     fclose(f);
     printf("✓Data Ditambahkan\n");
+    getch();
 }
 
 void ubah_data() {
